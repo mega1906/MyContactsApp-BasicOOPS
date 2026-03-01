@@ -18,6 +18,8 @@
 
 # Use Case - 9 : Search Contacts
 
+# Use Case - 10 : Advanced Filtering
+
 ## What this does
 
 - Create a new user with name, email, password and account type (FREE/PREMIUM)
@@ -62,3 +64,7 @@
   - case-insensitive matching with regex support
   - SearchCriteria interface + multiple implementations
   - stream filtering with predicates
+- Logged-in user can apply advanced filtering by:
+  - tag, date added, frequently contacted
+  - filter interface hierarchy with composite filters
+  - stream-based multi-level filtering

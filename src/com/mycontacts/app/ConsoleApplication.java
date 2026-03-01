@@ -2,6 +2,7 @@ package com.mycontacts.app;
 
 import com.mycontacts.auth.AuthenticationProvider;
 import com.mycontacts.auth.SessionManager;
+import com.mycontacts.service.AdvancedFilterService;
 import com.mycontacts.service.AuthenticationService;
 import com.mycontacts.service.BulkContactService;
 import com.mycontacts.service.ContactService;
@@ -24,6 +25,7 @@ public class ConsoleApplication {
     private final ContactService contactService;
     private final SearchService searchService;
     private final BulkContactService bulkContactService;
+    private final AdvancedFilterService advancedFilterService;
 
     public ConsoleApplication(
             Scanner scanner,
@@ -35,7 +37,8 @@ public class ConsoleApplication {
             ProfileService profileService,
             ContactService contactService,
             SearchService searchService,
-            BulkContactService bulkContactService
+            BulkContactService bulkContactService,
+            AdvancedFilterService advancedFilterService
     ) {
         this.scanner = scanner;
         this.sessionManager = sessionManager;
@@ -47,6 +50,7 @@ public class ConsoleApplication {
         this.contactService = contactService;
         this.searchService = searchService;
         this.bulkContactService = bulkContactService;
+        this.advancedFilterService = advancedFilterService;
     }
 
     public void run() {
@@ -113,6 +117,9 @@ public class ConsoleApplication {
                 bulkContactService.openBulkOperationsMenu(scanner);
                 break;
             case "10":
+                advancedFilterService.runAdvancedFiltering(scanner);
+                break;
+            case "11":
                 authenticationService.logout();
                 break;
             default:

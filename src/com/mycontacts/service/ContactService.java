@@ -118,6 +118,8 @@ public class ContactService {
             return;
         }
 
+        // Track usage for frequently-contacted filtering.
+        contact.get().markContacted();
         ContactDetailsView detailsView = ContactDetailsView.from(contact.get());
         System.out.println();
         System.out.println(detailsView);

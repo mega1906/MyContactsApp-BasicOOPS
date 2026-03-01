@@ -8,6 +8,7 @@ import com.mycontacts.auth.OAuthTokenStore;
 import com.mycontacts.auth.SessionManager;
 import com.mycontacts.repository.ContactRepository;
 import com.mycontacts.repository.UserRepository;
+import com.mycontacts.service.AdvancedFilterService;
 import com.mycontacts.service.AuthenticationService;
 import com.mycontacts.service.BulkContactService;
 import com.mycontacts.service.ContactService;
@@ -21,12 +22,12 @@ import com.mycontacts.service.observer.DeletionStatsObserver;
 import java.util.Scanner;
 
 /**
- * UC9: Search Contacts
+ * UC10: Advanced Filtering
  *
- * User can search contacts by name, phone, email or tags.
+ * User can apply multiple filters like tag, date added and frequency.
  *
  * @author Developer
- * @version 9.0
+ * @version 10.0
  */
 public class Main {
     public static void main(String[] args) {
@@ -49,6 +50,7 @@ public class Main {
         ContactService contactService = new ContactService(contactRepository, sessionManager, deletionNotifier);
         SearchService searchService = new SearchService(contactRepository, sessionManager);
         BulkContactService bulkContactService = new BulkContactService(contactRepository, sessionManager, deletionNotifier);
+        AdvancedFilterService advancedFilterService = new AdvancedFilterService(contactRepository, sessionManager);
 
         ConsoleApplication app = new ConsoleApplication(
                 scanner,
@@ -60,7 +62,8 @@ public class Main {
                 profileService,
                 contactService,
                 searchService,
-                bulkContactService
+                bulkContactService,
+                advancedFilterService
         );
 
         app.run();

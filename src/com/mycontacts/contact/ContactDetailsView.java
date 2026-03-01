@@ -14,6 +14,7 @@ public final class ContactDetailsView {
     private final List<String> phones;
     private final List<String> emails;
     private final List<String> tags;
+    private final int contactedCount;
     private final Optional<String> address;
     private final Optional<String> notes;
     private final Optional<String> relationship;
@@ -29,6 +30,7 @@ public final class ContactDetailsView {
             List<String> phones,
             List<String> emails,
             List<String> tags,
+            int contactedCount,
             Optional<String> address,
             Optional<String> notes,
             Optional<String> relationship,
@@ -43,6 +45,7 @@ public final class ContactDetailsView {
         this.phones = List.copyOf(phones);
         this.emails = List.copyOf(emails);
         this.tags = List.copyOf(tags);
+        this.contactedCount = contactedCount;
         this.address = address;
         this.notes = notes;
         this.relationship = relationship;
@@ -71,6 +74,7 @@ public final class ContactDetailsView {
                 contact.getPhoneNumbers().stream().map(PhoneNumber::toString).toList(),
                 contact.getEmailAddresses().stream().map(EmailAddress::toString).toList(),
                 contact.getTags().stream().sorted().toList(),
+                contact.getContactedCount(),
                 Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),
                 relationship,
@@ -108,6 +112,10 @@ public final class ContactDetailsView {
         return tags;
     }
 
+    public int getContactedCount() {
+        return contactedCount;
+    }
+
     public Optional<String> getAddress() {
         return address;
     }
@@ -143,6 +151,7 @@ public final class ContactDetailsView {
                         "Phones: %s%n" +
                         "Emails: %s%n" +
                         "Tags: %s%n" +
+                        "Contacted Count: %d%n" +
                         "Address: %s%n" +
                         "Notes: %s%n" +
                         "Relationship: %s%n" +
@@ -156,6 +165,7 @@ public final class ContactDetailsView {
                 phones,
                 emails,
                 tags,
+                contactedCount,
                 address.orElse("N/A"),
                 notes.orElse("N/A"),
                 relationship.orElse("N/A"),

@@ -27,6 +27,7 @@ public abstract class Contact {
 
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private int contactedCount;
 
     protected Contact(UUID ownerUserId, String referenceId, String name) {
         if (ownerUserId == null) {
@@ -47,6 +48,7 @@ public abstract class Contact {
         LocalDateTime now = LocalDateTime.now();
         this.createdAt = now;
         this.updatedAt = now;
+        this.contactedCount = 0;
     }
 
     // Copy constructor used for safe edit workflows.
@@ -62,6 +64,7 @@ public abstract class Contact {
         this.notes = other.notes;
         this.createdAt = other.createdAt;
         this.updatedAt = other.updatedAt;
+        this.contactedCount = other.contactedCount;
         for (PhoneNumber phoneNumber : other.phoneNumbers) {
             this.phoneNumbers.add(new PhoneNumber(phoneNumber.getLabel(), phoneNumber.getNumber()));
         }
@@ -201,6 +204,16 @@ public abstract class Contact {
         return updatedAt;
     }
 
+    public int getContactedCount() {
+        return contactedCount;
+    }
+
+    // Incremented when user opens contact details.
+    public void markContacted() {
+        contactedCount++;
+        touch();
+    }
+
     // Used by delete path for cascading related data cleanup.
     public void cascadeDeleteRelatedData() {
         phoneNumbers.clear();
@@ -227,6 +240,7 @@ public abstract class Contact {
                 ", phones=" + phoneNumbers +
                 ", emails=" + emailAddresses +
                 ", tags=" + tags +
+                ", contactedCount=" + contactedCount +
                 ", createdAt=" + createdAt +
                 '}';
     }
