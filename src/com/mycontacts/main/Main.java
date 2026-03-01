@@ -16,13 +16,12 @@ import com.mycontacts.service.RegistrationService;
 import java.util.Scanner;
 
 /**
- * UC5: View Contact Details
+ * UC6: Edit Contact
  * 
- * Contact create and view with existing auth/profile flows.
- * Updated to view the saved contact details
+ * Edit Contact with existing registration/auth/profile/contact flows.
  *
  * @author Developer
- * @version 5.0
+ * @version 6.0
  */
 public class Main {
     public static void main(String[] args) {

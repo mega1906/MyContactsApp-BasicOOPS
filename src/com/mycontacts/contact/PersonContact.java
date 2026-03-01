@@ -10,6 +10,12 @@ public class PersonContact extends Contact {
         super(ownerUserId, referenceId, name);
     }
 
+    // Copy constructor for edit operations.
+    public PersonContact(PersonContact other) {
+        super(other);
+        this.relationship = other.relationship;
+    }
+
     public String getRelationship() {
         return relationship;
     }

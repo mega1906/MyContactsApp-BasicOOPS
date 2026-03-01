@@ -10,6 +10,8 @@
 
 # Use Case - 5 : View Contact Details
 
+# Use Case - 6 : Edit Contact
+
 ## What this does
 
 - Create a new user with name, email, password and account type (FREE/PREMIUM)
@@ -36,3 +38,7 @@
   - immutable view object (`ContactDetailsView`)
   - Optional handling for nullable fields (address/notes/extra fields)
   - formatted display output
+- Logged-in user can edit existing contacts with:
+  - setter methods with validation
+  - copy constructors (`PersonContact`, `OrganizationContact`) for safe draft editing
+  - deep copy + defensive copying for phone/email lists before saving

@@ -51,6 +51,22 @@ public class ContactRepository {
         return prefix + sequence;
     }
 
+    // Replaces existing contact with same reference id for this owner.
+    public boolean replaceByReferenceIdAndOwnerUserId(String referenceId, UUID ownerUserId, Contact replacement) {
+        if (referenceId == null || ownerUserId == null || replacement == null) {
+            return false;
+        }
+        String normalized = referenceId.trim().toUpperCase();
+        List<Contact> contacts = contactsByUser.getOrDefault(ownerUserId, Collections.emptyList());
+        for (int i = 0; i < contacts.size(); i++) {
+            if (contacts.get(i).getReferenceId().equals(normalized)) {
+                contacts.set(i, replacement);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private String buildPrefix(String ownerName) {
         if (ownerName == null || ownerName.isBlank()) {
             return "USR";

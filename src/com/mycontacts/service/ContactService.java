@@ -11,6 +11,7 @@ import com.mycontacts.contact.PhoneNumber;
 import com.mycontacts.repository.ContactRepository;
 import com.mycontacts.user.User;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
@@ -112,6 +113,155 @@ public class ContactService {
         ContactDetailsView detailsView = ContactDetailsView.from(contact.get());
         System.out.println();
         System.out.println(detailsView);
+    }
+
+    // UC-06: edit an existing contact through a copied draft object.
+    public void editContact(Scanner sc) {
+        Optional<AuthSession> current = sessionManager.getCurrentSession();
+        if (current.isEmpty()) {
+            System.out.println("No active session.");
+            return;
+        }
+
+        UUID ownerId = current.get().getUser().getId();
+        List<Contact> contacts = contactRepository.findByOwnerUserId(ownerId);
+        if (contacts.isEmpty()) {
+            System.out.println("No contacts found for this user.");
+            return;
+        }
+
+        String availableRefs = contacts.stream()
+                .map(Contact::getReferenceId)
+                .collect(Collectors.joining(", "));
+        System.out.println("Available Contact Ref IDs: " + availableRefs);
+        System.out.print("Enter Contact Ref ID to edit: ");
+        String referenceId = sc.nextLine().trim();
+
+        Optional<Contact> original = contactRepository.findByReferenceIdAndOwnerUserId(referenceId, ownerId);
+        if (original.isEmpty()) {
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        Contact draft = copyForEdit(original.get());
+        boolean save = editDraft(sc, draft);
+        if (!save) {
+            System.out.println("Edit cancelled. No changes saved.");
+            return;
+        }
+
+        boolean updated = contactRepository.replaceByReferenceIdAndOwnerUserId(referenceId, ownerId, draft);
+        if (updated) {
+            System.out.println("Contact updated successfully.");
+        } else {
+            System.out.println("Unable to update contact.");
+        }
+    }
+
+    private Contact copyForEdit(Contact original) {
+        if (original instanceof PersonContact) {
+            return new PersonContact((PersonContact) original);
+        }
+        if (original instanceof OrganizationContact) {
+            return new OrganizationContact((OrganizationContact) original);
+        }
+        throw new IllegalArgumentException("Unsupported contact type.");
+    }
+
+    private boolean editDraft(Scanner sc, Contact draft) {
+        while (true) {
+            System.out.println("\nEdit Contact Draft [" + draft.getReferenceId() + "]");
+            System.out.println("1. Edit Name");
+            System.out.println("2. Replace Phone Numbers");
+            System.out.println("3. Replace Email Addresses");
+            System.out.println("4. Edit Address");
+            System.out.println("5. Edit Notes");
+            if (draft instanceof PersonContact) {
+                System.out.println("6. Edit Relationship");
+            } else {
+                System.out.println("6. Edit Organization Type");
+            }
+            System.out.println("7. Save Changes");
+            System.out.println("0. Cancel");
+            System.out.print("Choose option: ");
+
+            String choice = sc.nextLine().trim();
+            try {
+                switch (choice) {
+                    case "1":
+                        System.out.print("New Name: ");
+                        draft.setName(sc.nextLine());
+                        System.out.println("Name updated in draft.");
+                        break;
+                    case "2":
+                        draft.setPhoneNumbers(readPhoneNumberList(sc));
+                        System.out.println("Phone numbers updated in draft.");
+                        break;
+                    case "3":
+                        draft.setEmailAddresses(readEmailAddressList(sc));
+                        System.out.println("Email addresses updated in draft.");
+                        break;
+                    case "4":
+                        System.out.print("New Address (optional): ");
+                        draft.setAddress(sc.nextLine());
+                        System.out.println("Address updated in draft.");
+                        break;
+                    case "5":
+                        System.out.print("New Notes (optional): ");
+                        draft.setNotes(sc.nextLine());
+                        System.out.println("Notes updated in draft.");
+                        break;
+                    case "6":
+                        if (draft instanceof PersonContact) {
+                            System.out.print("New Relationship (optional): ");
+                            ((PersonContact) draft).setRelationship(sc.nextLine());
+                        } else {
+                            System.out.print("New Organization Type (optional): ");
+                            ((OrganizationContact) draft).setOrganizationType(sc.nextLine());
+                        }
+                        System.out.println("Type-specific field updated in draft.");
+                        break;
+                    case "7":
+                        return true;
+                    case "0":
+                        return false;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private List<PhoneNumber> readPhoneNumberList(Scanner sc) {
+        java.util.List<PhoneNumber> phoneNumbers = new java.util.ArrayList<>();
+        while (true) {
+            System.out.print("Phone Label (HOME/WORK/MOBILE/OTHER): ");
+            String label = sc.nextLine();
+            System.out.print("Phone Number: ");
+            String number = sc.nextLine();
+            phoneNumbers.add(new PhoneNumber(label, number));
+
+            if (!askYesNo(sc, "Add another phone number? [Y/N]: ")) {
+                return phoneNumbers;
+            }
+        }
+    }
+
+    private List<EmailAddress> readEmailAddressList(Scanner sc) {
+        java.util.List<EmailAddress> emailAddresses = new java.util.ArrayList<>();
+        while (true) {
+            System.out.print("Email Label (PERSONAL/WORK/OTHER): ");
+            String label = sc.nextLine();
+            System.out.print("Email Address: ");
+            String email = sc.nextLine();
+            emailAddresses.add(new EmailAddress(label, email));
+
+            if (!askYesNo(sc, "Add another email address? [Y/N]: ")) {
+                return emailAddresses;
+            }
+        }
     }
 
     private boolean readPhoneNumbers(Scanner sc, Contact contact) {

@@ -46,6 +46,27 @@ public abstract class Contact {
         this.updatedAt = now;
     }
 
+    // Copy constructor used for safe edit workflows.
+    protected Contact(Contact other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Contact cannot be null.");
+        }
+        this.id = other.id;
+        this.referenceId = other.referenceId;
+        this.ownerUserId = other.ownerUserId;
+        this.name = other.name;
+        this.address = other.address;
+        this.notes = other.notes;
+        this.createdAt = other.createdAt;
+        this.updatedAt = other.updatedAt;
+        for (PhoneNumber phoneNumber : other.phoneNumbers) {
+            this.phoneNumbers.add(new PhoneNumber(phoneNumber.getLabel(), phoneNumber.getNumber()));
+        }
+        for (EmailAddress emailAddress : other.emailAddresses) {
+            this.emailAddresses.add(new EmailAddress(emailAddress.getLabel(), emailAddress.getEmail()));
+        }
+    }
+
     public UUID getId() {
         return id;
     }
@@ -109,6 +130,36 @@ public abstract class Contact {
             throw new IllegalArgumentException("Email address cannot be null.");
         }
         emailAddresses.add(emailAddress);
+        touch();
+    }
+
+    // Replaces phone list with a defensive deep copy.
+    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
+        if (phoneNumbers == null || phoneNumbers.isEmpty()) {
+            throw new IllegalArgumentException("At least one phone number is required.");
+        }
+        this.phoneNumbers.clear();
+        for (PhoneNumber phoneNumber : phoneNumbers) {
+            if (phoneNumber == null) {
+                throw new IllegalArgumentException("Phone number cannot be null.");
+            }
+            this.phoneNumbers.add(new PhoneNumber(phoneNumber.getLabel(), phoneNumber.getNumber()));
+        }
+        touch();
+    }
+
+    // Replaces email list with a defensive deep copy.
+    public void setEmailAddresses(List<EmailAddress> emailAddresses) {
+        if (emailAddresses == null || emailAddresses.isEmpty()) {
+            throw new IllegalArgumentException("At least one email address is required.");
+        }
+        this.emailAddresses.clear();
+        for (EmailAddress emailAddress : emailAddresses) {
+            if (emailAddress == null) {
+                throw new IllegalArgumentException("Email address cannot be null.");
+            }
+            this.emailAddresses.add(new EmailAddress(emailAddress.getLabel(), emailAddress.getEmail()));
+        }
         touch();
     }
 

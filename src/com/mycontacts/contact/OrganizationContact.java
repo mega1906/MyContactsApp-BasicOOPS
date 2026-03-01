@@ -10,6 +10,12 @@ public class OrganizationContact extends Contact {
         super(ownerUserId, referenceId, name);
     }
 
+    // Copy constructor for edit operations.
+    public OrganizationContact(OrganizationContact other) {
+        super(other);
+        this.organizationType = other.organizationType;
+    }
+
     public String getOrganizationType() {
         return organizationType;
     }
