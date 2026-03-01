@@ -1,8 +1,8 @@
 # MyContactsApp-BasicOOPS
 
 # Use Case - 1 : New User Registration
-
 # Use Case - 2 : User Authentication
+# Use Case - 3 : User Profile Management
 
 ## What this does
 
@@ -17,3 +17,7 @@
 - Supports session management:
   - show logged-in user details
   - logout
+- Logged-in user can:
+  - update profile (name/email)
+  - change password (with current password verification)
+  - manage preferences (email notifications, language, contact view)

@@ -17,6 +17,25 @@ public class UserRepository {
         usersByEmail.put(normalize(user.getEmail()), user);
     }
 
+    // Updates email key safely for an existing user.
+    public boolean updateEmail(User user, String newEmail) {
+        if (user == null || newEmail == null) {
+            return false;
+        }
+
+        String oldKey = normalize(user.getEmail());
+        String newKey = normalize(newEmail);
+
+        if (!oldKey.equals(newKey) && usersByEmail.containsKey(newKey)) {
+            return false;
+        }
+
+        usersByEmail.remove(oldKey);
+        user.setEmail(newEmail);
+        usersByEmail.put(normalize(user.getEmail()), user);
+        return true;
+    }
+
     // Finds user by email.
     public Optional<User> findByEmail(String email) {
         return email == null

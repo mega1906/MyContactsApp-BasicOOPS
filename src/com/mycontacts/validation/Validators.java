@@ -14,6 +14,11 @@ public final class Validators {
         return email != null && EMAIL_RX.matcher(email.trim()).matches();
     }
 
+    // Name should have basic minimum length.
+    public static boolean isValidName(String name) {
+        return name != null && name.trim().length() >= 2;
+    }
+
     // Password must be 8+ chars with letters and digits.
     public static boolean isStrongPassword(String pwd) {
         if (pwd == null) {
@@ -23,5 +28,32 @@ public final class Validators {
         boolean hasDigit = pwd.chars().anyMatch(Character::isDigit);
         boolean hasLetter = pwd.chars().anyMatch(Character::isLetter);
         return len && hasDigit && hasLetter;
+    }
+
+    // Account type must be FREE or PREMIUM.
+    public static boolean isValidAccountType(String accountType) {
+        if (accountType == null) {
+            return false;
+        }
+        String normalized = accountType.trim().toUpperCase();
+        return "FREE".equals(normalized) || "PREMIUM".equals(normalized);
+    }
+
+    // Allowed language codes for preferences.
+    public static boolean isValidLanguage(String language) {
+        if (language == null) {
+            return false;
+        }
+        String normalized = language.trim().toUpperCase();
+        return "EN".equals(normalized) || "HI".equals(normalized) || "TA".equals(normalized);
+    }
+
+    // Allowed contact view modes.
+    public static boolean isValidContactView(String contactView) {
+        if (contactView == null) {
+            return false;
+        }
+        String normalized = contactView.trim().toUpperCase();
+        return "LIST".equals(normalized) || "CARD".equals(normalized);
     }
 }
