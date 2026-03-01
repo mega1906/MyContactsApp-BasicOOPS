@@ -4,21 +4,33 @@ import com.mycontacts.user.User;
 import java.util.*;
 
 public class UserRepository {
+    // In-memory user store, keyed by email.
     private final Map<String, User> usersByEmail = new HashMap<>();
 
-    // Checks if the user exists
+    // Checks if email already exists.
     public boolean existsByEmail(String email) {
-        return usersByEmail.containsKey(email.toLowerCase());
+        return email != null && usersByEmail.containsKey(normalize(email));
     }
 
-    // Saves the user details in the hashmap
+    // Saves or updates user by email key.
     public void save(User user) {
-        usersByEmail.put(user.getEmail().toLowerCase(), user);
+        usersByEmail.put(normalize(user.getEmail()), user);
     }
 
-    // Finds user by email
+    // Finds user by email.
     public Optional<User> findByEmail(String email) {
-        if (email == null) return Optional.empty();
-        return Optional.ofNullable(usersByEmail.get(email.toLowerCase()));
+        return email == null
+                ? Optional.empty()
+                : Optional.ofNullable(usersByEmail.get(normalize(email)));
+    }
+
+    // Shared credential check for auth providers.
+    public Optional<User> authenticate(String email, String passwordHash) {
+        return findByEmail(email).filter(user -> user.getPasswordHash().equals(passwordHash));
+    }
+
+    // Normalizes email key format.
+    private String normalize(String email) {
+        return email.trim().toLowerCase();
     }
 }

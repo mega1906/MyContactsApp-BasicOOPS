@@ -2,20 +2,19 @@ package com.mycontacts.user;
 
 import java.util.UUID;
 
-/*
- * UUID to give universally unique identifier to each user
- * Name, Email, Password, Account Type are input fields
- * Passwords are stored as hashes.
- */
+// Base user model shared by FREE and PREMIUM users.
 public class User {
+    // Unique identifier for each user.
     private final UUID id;
+    // Basic profile fields.
     private String name;
     private String email;
+    // Password is stored as SHA-256 hash only.
     private String passwordHash;
-    // free or premium account
+    // Account type (FREE or PREMIUM).
     private String accountType; 
 
-    // Constructor for User class
+    // Creates a new user.
     public User(String name, String email, String passwordHash, String accountType) {
         this.id = UUID.randomUUID();
         this.name = name;
@@ -24,7 +23,7 @@ public class User {
         this.accountType = accountType;
     }
 
-    // Getter and Setters
+    // Getters and setters.
     public UUID getId() { return id; }
     
     public String getName() { return name; }
@@ -39,7 +38,7 @@ public class User {
     public String getAccountType() { return accountType; }
     public void setAccountType(String accountType) { this.accountType = accountType; }
 
-    // Displays the user details
+    // Shows safe user details (without password hash).
     @Override
     public String toString() {
         return "User{" +
