@@ -6,8 +6,8 @@ import java.util.UUID;
 public class OrganizationContact extends Contact {
     private String organizationType;
 
-    public OrganizationContact(UUID ownerUserId, String name) {
-        super(ownerUserId, name);
+    public OrganizationContact(UUID ownerUserId, String referenceId, String name) {
+        super(ownerUserId, referenceId, name);
     }
 
     public String getOrganizationType() {

@@ -6,8 +6,8 @@ import java.util.UUID;
 public class PersonContact extends Contact {
     private String relationship;
 
-    public PersonContact(UUID ownerUserId, String name) {
-        super(ownerUserId, name);
+    public PersonContact(UUID ownerUserId, String referenceId, String name) {
+        super(ownerUserId, referenceId, name);
     }
 
     public String getRelationship() {

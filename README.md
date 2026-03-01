@@ -1,9 +1,14 @@
 # MyContactsApp-BasicOOPS
 
 # Use Case - 1 : New User Registration
+
 # Use Case - 2 : User Authentication
+
 # Use Case - 3 : User Profile Management
+
 # Use Case - 4 : Create Contact
+
+# Use Case - 5 : View Contact Details
 
 ## What this does
 
@@ -26,4 +31,8 @@
   - contact hierarchy (`PersonContact`, `OrganizationContact`)
   - composition (`PhoneNumber`, `EmailAddress`)
   - multiple phones/emails via `List`
-  - `UUID` contact id + `LocalDateTime` timestamps
+  - simple reference id per user from owner name (example `ALI1`, `ALI2`) + `UUID` + `LocalDateTime` timestamps
+- Logged-in user can view full contact details by simple contact reference ID with:
+  - immutable view object (`ContactDetailsView`)
+  - Optional handling for nullable fields (address/notes/extra fields)
+  - formatted display output

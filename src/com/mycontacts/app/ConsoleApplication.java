@@ -90,6 +90,9 @@ public class ConsoleApplication {
                 contactService.createContact(scanner);
                 break;
             case "5":
+                contactService.viewContactDetails(scanner);
+                break;
+            case "6":
                 authenticationService.logout();
                 break;
             default:

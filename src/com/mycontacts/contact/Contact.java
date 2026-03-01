@@ -11,6 +11,7 @@ import java.util.UUID;
 // Base contact model with common fields.
 public abstract class Contact {
     private final UUID id;
+    private final String referenceId;
     private final UUID ownerUserId;
 
     private String name;
@@ -24,15 +25,19 @@ public abstract class Contact {
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    protected Contact(UUID ownerUserId, String name) {
+    protected Contact(UUID ownerUserId, String referenceId, String name) {
         if (ownerUserId == null) {
             throw new IllegalArgumentException("Owner id cannot be null.");
+        }
+        if (referenceId == null || referenceId.isBlank()) {
+            throw new IllegalArgumentException("Reference id cannot be blank.");
         }
         if (!Validators.isValidName(name)) {
             throw new IllegalArgumentException("Contact name must be at least 2 characters.");
         }
 
         this.id = UUID.randomUUID();
+        this.referenceId = referenceId.trim().toUpperCase();
         this.ownerUserId = ownerUserId;
         this.name = name.trim();
 
@@ -43,6 +48,10 @@ public abstract class Contact {
 
     public UUID getId() {
         return id;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
     }
 
     public UUID getOwnerUserId() {
@@ -121,6 +130,7 @@ public abstract class Contact {
     public String toString() {
         return "Contact{" +
                 "id=" + id +
+                ", referenceId='" + referenceId + '\'' +
                 ", type='" + getContactType() + '\'' +
                 ", name='" + name + '\'' +
                 ", phones=" + phoneNumbers +

@@ -16,12 +16,13 @@ import com.mycontacts.service.RegistrationService;
 import java.util.Scanner;
 
 /**
- * UC4: Create Contact
+ * UC5: View Contact Details
  * 
- * User can create new contacts and save them
- * 
+ * Contact create and view with existing auth/profile flows.
+ * Updated to view the saved contact details
+ *
  * @author Developer
- * @version 4.0
+ * @version 5.0
  */
 public class Main {
     public static void main(String[] args) {

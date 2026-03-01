@@ -3,6 +3,7 @@ package com.mycontacts.service;
 import com.mycontacts.auth.AuthSession;
 import com.mycontacts.auth.SessionManager;
 import com.mycontacts.contact.Contact;
+import com.mycontacts.contact.ContactDetailsView;
 import com.mycontacts.contact.EmailAddress;
 import com.mycontacts.contact.OrganizationContact;
 import com.mycontacts.contact.PersonContact;
@@ -13,8 +14,9 @@ import com.mycontacts.user.User;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-// Handles UC-04 contact creation.
+// Handles UC-04 and UC-05 for contacts.
 public class ContactService {
     private final ContactRepository contactRepository;
     private final SessionManager sessionManager;
@@ -33,6 +35,7 @@ public class ContactService {
 
         User owner = current.get().getUser();
         UUID ownerId = owner.getId();
+        String referenceId = contactRepository.nextReferenceId(ownerId, owner.getName());
 
         System.out.println("\nCreate Contact");
         System.out.print("Contact Type [PERSON/ORGANIZATION]: ");
@@ -44,12 +47,12 @@ public class ContactService {
         Contact contact;
         try {
             if ("PERSON".equals(type)) {
-                PersonContact person = new PersonContact(ownerId, name);
+                PersonContact person = new PersonContact(ownerId, referenceId, name);
                 System.out.print("Relationship (optional): ");
                 person.setRelationship(sc.nextLine());
                 contact = person;
             } else if ("ORGANIZATION".equals(type)) {
-                OrganizationContact organization = new OrganizationContact(ownerId, name);
+                OrganizationContact organization = new OrganizationContact(ownerId, referenceId, name);
                 System.out.print("Organization Type (optional): ");
                 organization.setOrganizationType(sc.nextLine());
                 contact = organization;
@@ -74,8 +77,41 @@ public class ContactService {
 
         contactRepository.save(contact);
         System.out.println("Contact created successfully!");
-        System.out.println("Contact ID: " + contact.getId());
+        System.out.println("Contact Ref ID: " + contact.getReferenceId());
         System.out.println("Created At: " + contact.getCreatedAt());
+    }
+
+    // UC-05: view complete details of one contact.
+    public void viewContactDetails(Scanner sc) {
+        Optional<AuthSession> current = sessionManager.getCurrentSession();
+        if (current.isEmpty()) {
+            System.out.println("No active session.");
+            return;
+        }
+
+        UUID ownerId = current.get().getUser().getId();
+        java.util.List<Contact> contacts = contactRepository.findByOwnerUserId(ownerId);
+        if (contacts.isEmpty()) {
+            System.out.println("No contacts found for this user.");
+            return;
+        }
+
+        String availableRefs = contacts.stream()
+                .map(Contact::getReferenceId)
+                .collect(Collectors.joining(", "));
+        System.out.println("Available Contact Ref IDs: " + availableRefs);
+        System.out.print("Enter Contact Ref ID (example ALI1): ");
+        String referenceId = sc.nextLine().trim();
+
+        Optional<Contact> contact = contactRepository.findByReferenceIdAndOwnerUserId(referenceId, ownerId);
+        if (contact.isEmpty()) {
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        ContactDetailsView detailsView = ContactDetailsView.from(contact.get());
+        System.out.println();
+        System.out.println(detailsView);
     }
 
     private boolean readPhoneNumbers(Scanner sc, Contact contact) {
