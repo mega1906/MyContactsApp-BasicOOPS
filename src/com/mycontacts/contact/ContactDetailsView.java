@@ -13,6 +13,7 @@ public final class ContactDetailsView {
     private final String name;
     private final List<String> phones;
     private final List<String> emails;
+    private final List<String> tags;
     private final Optional<String> address;
     private final Optional<String> notes;
     private final Optional<String> relationship;
@@ -27,6 +28,7 @@ public final class ContactDetailsView {
             String name,
             List<String> phones,
             List<String> emails,
+            List<String> tags,
             Optional<String> address,
             Optional<String> notes,
             Optional<String> relationship,
@@ -40,6 +42,7 @@ public final class ContactDetailsView {
         this.name = name;
         this.phones = List.copyOf(phones);
         this.emails = List.copyOf(emails);
+        this.tags = List.copyOf(tags);
         this.address = address;
         this.notes = notes;
         this.relationship = relationship;
@@ -67,6 +70,7 @@ public final class ContactDetailsView {
                 contact.getName(),
                 contact.getPhoneNumbers().stream().map(PhoneNumber::toString).toList(),
                 contact.getEmailAddresses().stream().map(EmailAddress::toString).toList(),
+                contact.getTags().stream().sorted().toList(),
                 Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),
                 relationship,
@@ -98,6 +102,10 @@ public final class ContactDetailsView {
 
     public List<String> getEmails() {
         return emails;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 
     public Optional<String> getAddress() {
@@ -134,6 +142,7 @@ public final class ContactDetailsView {
                         "Name: %s%n" +
                         "Phones: %s%n" +
                         "Emails: %s%n" +
+                        "Tags: %s%n" +
                         "Address: %s%n" +
                         "Notes: %s%n" +
                         "Relationship: %s%n" +
@@ -146,6 +155,7 @@ public final class ContactDetailsView {
                 name,
                 phones,
                 emails,
+                tags,
                 address.orElse("N/A"),
                 notes.orElse("N/A"),
                 relationship.orElse("N/A"),

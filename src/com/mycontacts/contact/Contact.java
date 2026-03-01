@@ -5,7 +5,9 @@ import com.mycontacts.validation.Validators;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 // Base contact model with common fields.
@@ -21,6 +23,7 @@ public abstract class Contact {
     // Composition: one contact can have many phone/email values.
     private final List<PhoneNumber> phoneNumbers = new ArrayList<>();
     private final List<EmailAddress> emailAddresses = new ArrayList<>();
+    private final Set<String> tags = new LinkedHashSet<>();
 
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -65,6 +68,7 @@ public abstract class Contact {
         for (EmailAddress emailAddress : other.emailAddresses) {
             this.emailAddresses.add(new EmailAddress(emailAddress.getLabel(), emailAddress.getEmail()));
         }
+        this.tags.addAll(other.tags);
     }
 
     public UUID getId() {
@@ -117,6 +121,10 @@ public abstract class Contact {
         return Collections.unmodifiableList(emailAddresses);
     }
 
+    public Set<String> getTags() {
+        return Collections.unmodifiableSet(tags);
+    }
+
     public void addPhoneNumber(PhoneNumber phoneNumber) {
         if (phoneNumber == null) {
             throw new IllegalArgumentException("Phone number cannot be null.");
@@ -130,6 +138,28 @@ public abstract class Contact {
             throw new IllegalArgumentException("Email address cannot be null.");
         }
         emailAddresses.add(emailAddress);
+        touch();
+    }
+
+    public void addTag(String tag) {
+        if (tag == null || tag.isBlank()) {
+            throw new IllegalArgumentException("Tag cannot be blank.");
+        }
+        tags.add(tag.trim().toUpperCase());
+        touch();
+    }
+
+    public void setTags(Set<String> tags) {
+        if (tags == null) {
+            throw new IllegalArgumentException("Tags cannot be null.");
+        }
+        this.tags.clear();
+        for (String tag : tags) {
+            if (tag == null || tag.isBlank()) {
+                throw new IllegalArgumentException("Tag cannot be blank.");
+            }
+            this.tags.add(tag.trim().toUpperCase());
+        }
         touch();
     }
 
@@ -175,6 +205,7 @@ public abstract class Contact {
     public void cascadeDeleteRelatedData() {
         phoneNumbers.clear();
         emailAddresses.clear();
+        tags.clear();
         address = null;
         notes = null;
         touch();
@@ -195,6 +226,7 @@ public abstract class Contact {
                 ", name='" + name + '\'' +
                 ", phones=" + phoneNumbers +
                 ", emails=" + emailAddresses +
+                ", tags=" + tags +
                 ", createdAt=" + createdAt +
                 '}';
     }

@@ -9,6 +9,7 @@ import com.mycontacts.auth.SessionManager;
 import com.mycontacts.repository.ContactRepository;
 import com.mycontacts.repository.UserRepository;
 import com.mycontacts.service.AuthenticationService;
+import com.mycontacts.service.BulkContactService;
 import com.mycontacts.service.ContactService;
 import com.mycontacts.service.ProfileService;
 import com.mycontacts.service.RegistrationService;
@@ -19,12 +20,12 @@ import com.mycontacts.service.observer.DeletionStatsObserver;
 import java.util.Scanner;
 
 /**
- * UC7: Delete Contact
- * 
- * User can delete any contact that he saved earlier
+ * UC8: Bulk Operations
+ *
+ * User can run bulk delete, bulk tag and bulk export on contacts.
  *
  * @author Developer
- * @version 7.0
+ * @version 8.0
  */
 public class Main {
     public static void main(String[] args) {
@@ -45,6 +46,7 @@ public class Main {
         deletionNotifier.registerObserver(new DeletionAuditObserver());
         deletionNotifier.registerObserver(new DeletionStatsObserver());
         ContactService contactService = new ContactService(contactRepository, sessionManager, deletionNotifier);
+        BulkContactService bulkContactService = new BulkContactService(contactRepository, sessionManager, deletionNotifier);
 
         ConsoleApplication app = new ConsoleApplication(
                 scanner,
@@ -54,7 +56,8 @@ public class Main {
                 registrationService,
                 authenticationService,
                 profileService,
-                contactService
+                contactService,
+                bulkContactService
         );
 
         app.run();

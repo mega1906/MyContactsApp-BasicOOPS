@@ -14,6 +14,8 @@
 
 # Use Case - 7 : Delete Contact
 
+# Use Case - 8 : Bulk Operations
+
 ## What this does
 
 - Create a new user with name, email, password and account type (FREE/PREMIUM)
@@ -48,3 +50,6 @@
   - confirmation dialog before delete
   - permanent delete (remove + cascade cleanup)
   - observer notifications (`ContactDeletionNotifier` with audit/stats observers)
+- Logged-in user can run bulk operations with:
+  - bulk delete, bulk tag, bulk export (CSV)
+  - filtering predicates (by ids, type, tag, name, all)
