@@ -56,4 +56,13 @@ public final class Validators {
         String normalized = contactView.trim().toUpperCase();
         return "LIST".equals(normalized) || "CARD".equals(normalized);
     }
+
+    // Basic phone number check.
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) {
+            return false;
+        }
+        String normalized = phoneNumber.trim();
+        return normalized.matches("^[+0-9][0-9\\-\\s]{6,19}$");
+    }
 }

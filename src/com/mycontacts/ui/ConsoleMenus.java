@@ -17,7 +17,8 @@ public final class ConsoleMenus {
         System.out.println("\n1. Update Profile");
         System.out.println("2. Change Password");
         System.out.println("3. Manage Preferences");
-        System.out.println("4. Logout");
+        System.out.println("4. Create Contact");
+        System.out.println("5. Logout");
         System.out.print("Choose option: ");
     }
 }

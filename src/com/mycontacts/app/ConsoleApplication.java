@@ -3,6 +3,7 @@ package com.mycontacts.app;
 import com.mycontacts.auth.AuthenticationProvider;
 import com.mycontacts.auth.SessionManager;
 import com.mycontacts.service.AuthenticationService;
+import com.mycontacts.service.ContactService;
 import com.mycontacts.service.ProfileService;
 import com.mycontacts.service.RegistrationService;
 import com.mycontacts.ui.ConsoleMenus;
@@ -18,6 +19,7 @@ public class ConsoleApplication {
     private final RegistrationService registrationService;
     private final AuthenticationService authenticationService;
     private final ProfileService profileService;
+    private final ContactService contactService;
 
     public ConsoleApplication(
             Scanner scanner,
@@ -26,7 +28,8 @@ public class ConsoleApplication {
             AuthenticationProvider oauth,
             RegistrationService registrationService,
             AuthenticationService authenticationService,
-            ProfileService profileService
+            ProfileService profileService,
+            ContactService contactService
     ) {
         this.scanner = scanner;
         this.sessionManager = sessionManager;
@@ -35,6 +38,7 @@ public class ConsoleApplication {
         this.registrationService = registrationService;
         this.authenticationService = authenticationService;
         this.profileService = profileService;
+        this.contactService = contactService;
     }
 
     public void run() {
@@ -83,6 +87,9 @@ public class ConsoleApplication {
                 profileService.managePreferences(scanner);
                 break;
             case "4":
+                contactService.createContact(scanner);
+                break;
+            case "5":
                 authenticationService.logout();
                 break;
             default:

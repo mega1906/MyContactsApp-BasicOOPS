@@ -3,6 +3,7 @@
 # Use Case - 1 : New User Registration
 # Use Case - 2 : User Authentication
 # Use Case - 3 : User Profile Management
+# Use Case - 4 : Create Contact
 
 ## What this does
 
@@ -21,3 +22,8 @@
   - update profile (name/email)
   - change password (with current password verification)
   - manage preferences (email notifications, language, contact view)
+- Logged-in user can create contacts with:
+  - contact hierarchy (`PersonContact`, `OrganizationContact`)
+  - composition (`PhoneNumber`, `EmailAddress`)
+  - multiple phones/emails via `List`
+  - `UUID` contact id + `LocalDateTime` timestamps
