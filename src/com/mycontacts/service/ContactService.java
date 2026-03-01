@@ -9,6 +9,8 @@ import com.mycontacts.contact.OrganizationContact;
 import com.mycontacts.contact.PersonContact;
 import com.mycontacts.contact.PhoneNumber;
 import com.mycontacts.repository.ContactRepository;
+import com.mycontacts.service.exception.ContactDeleteException;
+import com.mycontacts.service.observer.ContactDeletionNotifier;
 import com.mycontacts.user.User;
 
 import java.util.List;
@@ -17,14 +19,20 @@ import java.util.Scanner;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-// Handles UC-04 and UC-05 for contacts.
+// Handles UC-04 to UC-07 for contacts.
 public class ContactService {
     private final ContactRepository contactRepository;
     private final SessionManager sessionManager;
+    private final ContactDeletionNotifier deletionNotifier;
 
-    public ContactService(ContactRepository contactRepository, SessionManager sessionManager) {
+    public ContactService(
+            ContactRepository contactRepository,
+            SessionManager sessionManager,
+            ContactDeletionNotifier deletionNotifier
+    ) {
         this.contactRepository = contactRepository;
         this.sessionManager = sessionManager;
+        this.deletionNotifier = deletionNotifier;
     }
 
     public void createContact(Scanner sc) {
@@ -155,6 +163,50 @@ public class ContactService {
             System.out.println("Contact updated successfully.");
         } else {
             System.out.println("Unable to update contact.");
+        }
+    }
+
+    // UC-07: delete contact with confirmation.
+    public void deleteContact(Scanner sc) {
+        Optional<AuthSession> current = sessionManager.getCurrentSession();
+        if (current.isEmpty()) {
+            System.out.println("No active session.");
+            return;
+        }
+
+        UUID ownerId = current.get().getUser().getId();
+        List<Contact> contacts = contactRepository.findByOwnerUserId(ownerId);
+        if (contacts.isEmpty()) {
+            System.out.println("No contacts found for this user.");
+            return;
+        }
+
+        String availableRefs = contacts.stream()
+                .map(Contact::getReferenceId)
+                .collect(Collectors.joining(", "));
+        System.out.println("Available Contact Ref IDs: " + availableRefs);
+        System.out.print("Enter Contact Ref ID to delete: ");
+        String referenceId = sc.nextLine().trim();
+
+        Optional<Contact> contact = contactRepository.findByReferenceIdAndOwnerUserId(referenceId, ownerId);
+        if (contact.isEmpty()) {
+            System.out.println("Contact not found.");
+            return;
+        }
+
+        if (!askYesNo(sc, "Are you sure you want to delete " + referenceId + "? [Y/N]: ")) {
+            System.out.println("Delete cancelled.");
+            return;
+        }
+
+        try {
+            Contact deleted = contactRepository.deleteByReferenceIdAndOwnerUserId(referenceId, ownerId)
+                    .orElseThrow(() -> new ContactDeleteException("Delete failed."));
+
+            deletionNotifier.notifyDeleted(deleted);
+            System.out.println("Delete successful.");
+        } catch (ContactDeleteException | IllegalStateException e) {
+            System.out.println("Delete failed: " + e.getMessage());
         }
     }
 

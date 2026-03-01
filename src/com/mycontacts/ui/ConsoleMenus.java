@@ -20,7 +20,8 @@ public final class ConsoleMenus {
         System.out.println("4. Create Contact");
         System.out.println("5. View Contact Details");
         System.out.println("6. Edit Contact");
-        System.out.println("7. Logout");
+        System.out.println("7. Delete Contact");
+        System.out.println("8. Logout");
         System.out.print("Choose option: ");
     }
 }

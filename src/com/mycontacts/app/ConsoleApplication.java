@@ -96,6 +96,9 @@ public class ConsoleApplication {
                 contactService.editContact(scanner);
                 break;
             case "7":
+                contactService.deleteContact(scanner);
+                break;
+            case "8":
                 authenticationService.logout();
                 break;
             default:

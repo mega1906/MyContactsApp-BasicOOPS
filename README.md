@@ -12,6 +12,8 @@
 
 # Use Case - 6 : Edit Contact
 
+# Use Case - 7 : Delete Contact
+
 ## What this does
 
 - Create a new user with name, email, password and account type (FREE/PREMIUM)
@@ -42,3 +44,7 @@
   - setter methods with validation
   - copy constructors (`PersonContact`, `OrganizationContact`) for safe draft editing
   - deep copy + defensive copying for phone/email lists before saving
+- Logged-in user can delete contacts with:
+  - confirmation dialog before delete
+  - permanent delete (remove + cascade cleanup)
+  - observer notifications (`ContactDeletionNotifier` with audit/stats observers)

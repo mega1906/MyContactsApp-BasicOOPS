@@ -12,16 +12,19 @@ import com.mycontacts.service.AuthenticationService;
 import com.mycontacts.service.ContactService;
 import com.mycontacts.service.ProfileService;
 import com.mycontacts.service.RegistrationService;
+import com.mycontacts.service.observer.ContactDeletionNotifier;
+import com.mycontacts.service.observer.DeletionAuditObserver;
+import com.mycontacts.service.observer.DeletionStatsObserver;
 
 import java.util.Scanner;
 
 /**
- * UC6: Edit Contact
+ * UC7: Delete Contact
  * 
- * Edit Contact with existing registration/auth/profile/contact flows.
+ * User can delete any contact that he saved earlier
  *
  * @author Developer
- * @version 6.0
+ * @version 7.0
  */
 public class Main {
     public static void main(String[] args) {
@@ -38,7 +41,10 @@ public class Main {
         RegistrationService registrationService = new RegistrationService(userRepository);
         AuthenticationService authenticationService = new AuthenticationService(sessionManager, tokenStore);
         ProfileService profileService = new ProfileService(userRepository, tokenStore, sessionManager);
-        ContactService contactService = new ContactService(contactRepository, sessionManager);
+        ContactDeletionNotifier deletionNotifier = new ContactDeletionNotifier();
+        deletionNotifier.registerObserver(new DeletionAuditObserver());
+        deletionNotifier.registerObserver(new DeletionStatsObserver());
+        ContactService contactService = new ContactService(contactRepository, sessionManager, deletionNotifier);
 
         ConsoleApplication app = new ConsoleApplication(
                 scanner,

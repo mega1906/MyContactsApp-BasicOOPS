@@ -67,6 +67,23 @@ public class ContactRepository {
         return false;
     }
 
+    public Optional<Contact> deleteByReferenceIdAndOwnerUserId(String referenceId, UUID ownerUserId) {
+        if (referenceId == null || referenceId.isBlank()) {
+            return Optional.empty();
+        }
+        String normalized = referenceId.trim().toUpperCase();
+        List<Contact> contacts = contactsByUser.getOrDefault(ownerUserId, Collections.emptyList());
+        for (int i = 0; i < contacts.size(); i++) {
+            Contact contact = contacts.get(i);
+            if (contact.getReferenceId().equals(normalized)) {
+                contact.cascadeDeleteRelatedData();
+                contacts.remove(i);
+                return Optional.of(contact);
+            }
+        }
+        return Optional.empty();
+    }
+
     private String buildPrefix(String ownerName) {
         if (ownerName == null || ownerName.isBlank()) {
             return "USR";

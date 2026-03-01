@@ -171,6 +171,15 @@ public abstract class Contact {
         return updatedAt;
     }
 
+    // Used by delete path for cascading related data cleanup.
+    public void cascadeDeleteRelatedData() {
+        phoneNumbers.clear();
+        emailAddresses.clear();
+        address = null;
+        notes = null;
+        touch();
+    }
+
     protected void touch() {
         updatedAt = LocalDateTime.now();
     }
