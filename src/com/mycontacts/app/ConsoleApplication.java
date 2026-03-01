@@ -7,6 +7,7 @@ import com.mycontacts.service.BulkContactService;
 import com.mycontacts.service.ContactService;
 import com.mycontacts.service.ProfileService;
 import com.mycontacts.service.RegistrationService;
+import com.mycontacts.service.SearchService;
 import com.mycontacts.ui.ConsoleMenus;
 
 import java.util.Scanner;
@@ -21,6 +22,7 @@ public class ConsoleApplication {
     private final AuthenticationService authenticationService;
     private final ProfileService profileService;
     private final ContactService contactService;
+    private final SearchService searchService;
     private final BulkContactService bulkContactService;
 
     public ConsoleApplication(
@@ -32,6 +34,7 @@ public class ConsoleApplication {
             AuthenticationService authenticationService,
             ProfileService profileService,
             ContactService contactService,
+            SearchService searchService,
             BulkContactService bulkContactService
     ) {
         this.scanner = scanner;
@@ -42,6 +45,7 @@ public class ConsoleApplication {
         this.authenticationService = authenticationService;
         this.profileService = profileService;
         this.contactService = contactService;
+        this.searchService = searchService;
         this.bulkContactService = bulkContactService;
     }
 
@@ -103,9 +107,12 @@ public class ConsoleApplication {
                 contactService.deleteContact(scanner);
                 break;
             case "8":
-                bulkContactService.openBulkOperationsMenu(scanner);
+                searchService.searchContacts(scanner);
                 break;
             case "9":
+                bulkContactService.openBulkOperationsMenu(scanner);
+                break;
+            case "10":
                 authenticationService.logout();
                 break;
             default:

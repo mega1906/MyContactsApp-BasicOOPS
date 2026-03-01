@@ -13,6 +13,7 @@ import com.mycontacts.service.BulkContactService;
 import com.mycontacts.service.ContactService;
 import com.mycontacts.service.ProfileService;
 import com.mycontacts.service.RegistrationService;
+import com.mycontacts.service.SearchService;
 import com.mycontacts.service.observer.ContactDeletionNotifier;
 import com.mycontacts.service.observer.DeletionAuditObserver;
 import com.mycontacts.service.observer.DeletionStatsObserver;
@@ -20,12 +21,12 @@ import com.mycontacts.service.observer.DeletionStatsObserver;
 import java.util.Scanner;
 
 /**
- * UC8: Bulk Operations
+ * UC9: Search Contacts
  *
- * User can run bulk delete, bulk tag and bulk export on contacts.
+ * User can search contacts by name, phone, email or tags.
  *
  * @author Developer
- * @version 8.0
+ * @version 9.0
  */
 public class Main {
     public static void main(String[] args) {
@@ -46,6 +47,7 @@ public class Main {
         deletionNotifier.registerObserver(new DeletionAuditObserver());
         deletionNotifier.registerObserver(new DeletionStatsObserver());
         ContactService contactService = new ContactService(contactRepository, sessionManager, deletionNotifier);
+        SearchService searchService = new SearchService(contactRepository, sessionManager);
         BulkContactService bulkContactService = new BulkContactService(contactRepository, sessionManager, deletionNotifier);
 
         ConsoleApplication app = new ConsoleApplication(
@@ -57,6 +59,7 @@ public class Main {
                 authenticationService,
                 profileService,
                 contactService,
+                searchService,
                 bulkContactService
         );
 

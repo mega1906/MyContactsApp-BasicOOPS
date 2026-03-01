@@ -16,6 +16,8 @@
 
 # Use Case - 8 : Bulk Operations
 
+# Use Case - 9 : Search Contacts
+
 ## What this does
 
 - Create a new user with name, email, password and account type (FREE/PREMIUM)
@@ -53,3 +55,10 @@
 - Logged-in user can run bulk operations with:
   - bulk delete, bulk tag, bulk export (CSV)
   - filtering predicates (by ids, type, tag, name, all)
+  - Streams API, lambda expressions, method references, batch processing
+- Logged-in user can search contacts by:
+  - name, phone, email, tags
+  - display all saved contacts
+  - case-insensitive matching with regex support
+  - SearchCriteria interface + multiple implementations
+  - stream filtering with predicates
