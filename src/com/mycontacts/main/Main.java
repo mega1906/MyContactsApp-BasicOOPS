@@ -24,12 +24,12 @@ import com.mycontacts.service.observer.DeletionStatsObserver;
 import java.util.Scanner;
 
 /**
- * UC11: Create and Manage Tags
+ * UC12: Apply Tags to Contacts
  *
- * Logged-in user can create custom tags and apply/remove tags from contacts.
+ * Logged-in user can assign one or many tags to contacts.
  *
  * @author Developer
- * @version 11.0
+ * @version 12.0
  */
 public class Main {
     public static void main(String[] args) {

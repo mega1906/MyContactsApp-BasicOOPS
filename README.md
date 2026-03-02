@@ -22,6 +22,8 @@
 
 # Use Case - 11 : Create and Manage Tags
 
+# Use Case - 12 : Apply Tags to Contacts
+
 ## What this does
 
 - Create a new user with name, email, password and account type (FREE/PREMIUM)
@@ -75,3 +77,7 @@
   - using many-to-many mapping (`Contact` has `Set<Tag>`)
   - built-in tags from `EnumSet` (`FAMILY`, `WORK`, `FRIENDS`)
   - applying/removing custom or predefined tags from contacts
+- Logged-in user can apply tags to contacts by:
+  - assigning one or multiple tags in one step (comma separated)
+  - using `Set` add/remove operations for uniqueness
+  - keeping bidirectional contact-tag links through a simple association object
