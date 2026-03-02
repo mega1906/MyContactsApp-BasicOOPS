@@ -62,7 +62,11 @@ public class AdvancedFilterService {
         System.out.print("Filter by tag (blank to skip): ");
         String tag = sc.nextLine().trim();
         if (!tag.isBlank()) {
-            filters.add(new TagContactFilter(tag));
+            try {
+                filters.add(new TagContactFilter(tag));
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid tag. Tag filter skipped.");
+            }
         }
 
         System.out.print("Filter by date added from (YYYY-MM-DD, blank to skip): ");
@@ -128,7 +132,10 @@ public class AdvancedFilterService {
     }
 
     private void printContactLine(Contact contact) {
-        String tags = contact.getTags().stream().sorted().collect(Collectors.joining("|"));
+        String tags = contact.getTags().stream()
+                .map(tag -> tag.getName().toUpperCase())
+                .sorted()
+                .collect(Collectors.joining("|"));
         System.out.println("- " + contact.getReferenceId()
                 + " | " + contact.getName()
                 + " | added: " + contact.getCreatedAt().toLocalDate()

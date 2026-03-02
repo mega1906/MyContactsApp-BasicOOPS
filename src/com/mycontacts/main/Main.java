@@ -7,6 +7,7 @@ import com.mycontacts.auth.OAuthProvider;
 import com.mycontacts.auth.OAuthTokenStore;
 import com.mycontacts.auth.SessionManager;
 import com.mycontacts.repository.ContactRepository;
+import com.mycontacts.repository.TagRepository;
 import com.mycontacts.repository.UserRepository;
 import com.mycontacts.service.AdvancedFilterService;
 import com.mycontacts.service.AuthenticationService;
@@ -15,6 +16,7 @@ import com.mycontacts.service.ContactService;
 import com.mycontacts.service.ProfileService;
 import com.mycontacts.service.RegistrationService;
 import com.mycontacts.service.SearchService;
+import com.mycontacts.service.TagService;
 import com.mycontacts.service.observer.ContactDeletionNotifier;
 import com.mycontacts.service.observer.DeletionAuditObserver;
 import com.mycontacts.service.observer.DeletionStatsObserver;
@@ -22,12 +24,12 @@ import com.mycontacts.service.observer.DeletionStatsObserver;
 import java.util.Scanner;
 
 /**
- * UC10: Advanced Filtering
+ * UC11: Create and Manage Tags
  *
- * User can apply multiple filters like tag, date added and frequency.
+ * Logged-in user can create custom tags and apply/remove tags from contacts.
  *
  * @author Developer
- * @version 10.0
+ * @version 11.0
  */
 public class Main {
     public static void main(String[] args) {
@@ -35,6 +37,7 @@ public class Main {
 
         UserRepository userRepository = new UserRepository();
         ContactRepository contactRepository = new ContactRepository();
+        TagRepository tagRepository = new TagRepository();
         OAuthTokenStore tokenStore = new OAuthTokenStore();
         SessionManager sessionManager = new SessionManager();
 
@@ -49,7 +52,9 @@ public class Main {
         deletionNotifier.registerObserver(new DeletionStatsObserver());
         ContactService contactService = new ContactService(contactRepository, sessionManager, deletionNotifier);
         SearchService searchService = new SearchService(contactRepository, sessionManager);
-        BulkContactService bulkContactService = new BulkContactService(contactRepository, sessionManager, deletionNotifier);
+        TagService tagService = new TagService(tagRepository, contactRepository, sessionManager);
+        BulkContactService bulkContactService =
+                new BulkContactService(contactRepository, sessionManager, deletionNotifier, tagService);
         AdvancedFilterService advancedFilterService = new AdvancedFilterService(contactRepository, sessionManager);
 
         ConsoleApplication app = new ConsoleApplication(
@@ -63,7 +68,8 @@ public class Main {
                 contactService,
                 searchService,
                 bulkContactService,
-                advancedFilterService
+                advancedFilterService,
+                tagService
         );
 
         app.run();

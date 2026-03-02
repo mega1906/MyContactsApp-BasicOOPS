@@ -20,6 +20,8 @@
 
 # Use Case - 10 : Advanced Filtering
 
+# Use Case - 11 : Create and Manage Tags
+
 ## What this does
 
 - Create a new user with name, email, password and account type (FREE/PREMIUM)
@@ -68,3 +70,8 @@
   - tag, date added, frequently contacted
   - filter interface hierarchy with composite filters
   - stream-based multi-level filtering
+- Logged-in user can create and manage tags by:
+  - using `Tag` value objects with validation
+  - using many-to-many mapping (`Contact` has `Set<Tag>`)
+  - built-in tags from `EnumSet` (`FAMILY`, `WORK`, `FRIENDS`)
+  - applying/removing custom or predefined tags from contacts

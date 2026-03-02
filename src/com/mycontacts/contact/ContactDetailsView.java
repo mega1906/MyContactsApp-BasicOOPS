@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 // Immutable view object for contact details display.
 public final class ContactDetailsView {
@@ -73,7 +74,10 @@ public final class ContactDetailsView {
                 contact.getName(),
                 contact.getPhoneNumbers().stream().map(PhoneNumber::toString).toList(),
                 contact.getEmailAddresses().stream().map(EmailAddress::toString).toList(),
-                contact.getTags().stream().sorted().toList(),
+                contact.getTags().stream()
+                        .map(tag -> tag.getName().toUpperCase())
+                        .sorted()
+                        .collect(Collectors.toList()),
                 contact.getContactedCount(),
                 Optional.ofNullable(contact.getAddress()).filter(value -> !value.isBlank()),
                 Optional.ofNullable(contact.getNotes()).filter(value -> !value.isBlank()),

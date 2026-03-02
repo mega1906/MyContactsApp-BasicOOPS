@@ -24,7 +24,8 @@ public final class ConsoleMenus {
         System.out.println("8. Search Contacts");
         System.out.println("9. Bulk Operations");
         System.out.println("10. Advanced Filtering");
-        System.out.println("11. Logout");
+        System.out.println("11. Manage Tags");
+        System.out.println("12. Logout");
         System.out.print("Choose option: ");
     }
 }

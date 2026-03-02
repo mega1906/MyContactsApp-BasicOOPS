@@ -1,6 +1,7 @@
 package com.mycontacts.contact;
 
 import com.mycontacts.validation.Validators;
+import com.mycontacts.tag.Tag;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public abstract class Contact {
     // Composition: one contact can have many phone/email values.
     private final List<PhoneNumber> phoneNumbers = new ArrayList<>();
     private final List<EmailAddress> emailAddresses = new ArrayList<>();
-    private final Set<String> tags = new LinkedHashSet<>();
+    private final Set<Tag> tags = new LinkedHashSet<>();
 
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -124,7 +125,7 @@ public abstract class Contact {
         return Collections.unmodifiableList(emailAddresses);
     }
 
-    public Set<String> getTags() {
+    public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
     }
 
@@ -144,24 +145,40 @@ public abstract class Contact {
         touch();
     }
 
-    public void addTag(String tag) {
-        if (tag == null || tag.isBlank()) {
-            throw new IllegalArgumentException("Tag cannot be blank.");
+    public void addTag(Tag tag) {
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag cannot be null.");
         }
-        tags.add(tag.trim().toUpperCase());
+        tags.add(tag);
         touch();
     }
 
-    public void setTags(Set<String> tags) {
+    // Convenience overload for simple call sites.
+    public void addTag(String tagName) {
+        addTag(Tag.custom(tagName));
+    }
+
+    public boolean removeTag(Tag tag) {
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag cannot be null.");
+        }
+        boolean removed = tags.remove(tag);
+        if (removed) {
+            touch();
+        }
+        return removed;
+    }
+
+    public void setTags(Set<Tag> tags) {
         if (tags == null) {
             throw new IllegalArgumentException("Tags cannot be null.");
         }
         this.tags.clear();
-        for (String tag : tags) {
-            if (tag == null || tag.isBlank()) {
-                throw new IllegalArgumentException("Tag cannot be blank.");
+        for (Tag tag : tags) {
+            if (tag == null) {
+                throw new IllegalArgumentException("Tag cannot be null.");
             }
-            this.tags.add(tag.trim().toUpperCase());
+            this.tags.add(tag);
         }
         touch();
     }

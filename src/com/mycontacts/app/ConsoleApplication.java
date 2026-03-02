@@ -9,6 +9,7 @@ import com.mycontacts.service.ContactService;
 import com.mycontacts.service.ProfileService;
 import com.mycontacts.service.RegistrationService;
 import com.mycontacts.service.SearchService;
+import com.mycontacts.service.TagService;
 import com.mycontacts.ui.ConsoleMenus;
 
 import java.util.Scanner;
@@ -26,6 +27,7 @@ public class ConsoleApplication {
     private final SearchService searchService;
     private final BulkContactService bulkContactService;
     private final AdvancedFilterService advancedFilterService;
+    private final TagService tagService;
 
     public ConsoleApplication(
             Scanner scanner,
@@ -38,7 +40,8 @@ public class ConsoleApplication {
             ContactService contactService,
             SearchService searchService,
             BulkContactService bulkContactService,
-            AdvancedFilterService advancedFilterService
+            AdvancedFilterService advancedFilterService,
+            TagService tagService
     ) {
         this.scanner = scanner;
         this.sessionManager = sessionManager;
@@ -51,6 +54,7 @@ public class ConsoleApplication {
         this.searchService = searchService;
         this.bulkContactService = bulkContactService;
         this.advancedFilterService = advancedFilterService;
+        this.tagService = tagService;
     }
 
     public void run() {
@@ -120,6 +124,9 @@ public class ConsoleApplication {
                 advancedFilterService.runAdvancedFiltering(scanner);
                 break;
             case "11":
+                tagService.openTagMenu(scanner);
+                break;
+            case "12":
                 authenticationService.logout();
                 break;
             default:

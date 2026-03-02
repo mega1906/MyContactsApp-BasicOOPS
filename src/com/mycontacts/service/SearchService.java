@@ -104,12 +104,15 @@ public class SearchService {
         String emails = contact.getEmailAddresses().stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(" | "));
-        String tags = contact.getTags().stream().sorted().collect(Collectors.joining(" | "));
+        String tagText = contact.getTags().stream()
+                .map(tag -> tag.getName().toUpperCase())
+                .sorted()
+                .collect(Collectors.joining(" | "));
 
         System.out.println("- " + contact.getReferenceId()
                 + " | " + contact.getName()
                 + " | phones: " + phones
                 + " | emails: " + emails
-                + " | tags: " + (tags.isBlank() ? "N/A" : tags));
+                + " | tags: " + (tagText.isBlank() ? "N/A" : tagText));
     }
 }

@@ -5,6 +5,7 @@ import com.mycontacts.auth.SessionManager;
 import com.mycontacts.contact.Contact;
 import com.mycontacts.repository.ContactRepository;
 import com.mycontacts.service.observer.ContactDeletionNotifier;
+import com.mycontacts.tag.Tag;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -26,15 +27,18 @@ public class BulkContactService {
     private final ContactRepository contactRepository;
     private final SessionManager sessionManager;
     private final ContactDeletionNotifier deletionNotifier;
+    private final TagService tagService;
 
     public BulkContactService(
             ContactRepository contactRepository,
             SessionManager sessionManager,
-            ContactDeletionNotifier deletionNotifier
+            ContactDeletionNotifier deletionNotifier,
+            TagService tagService
     ) {
         this.contactRepository = contactRepository;
         this.sessionManager = sessionManager;
         this.deletionNotifier = deletionNotifier;
+        this.tagService = tagService;
     }
 
     public void openBulkOperationsMenu(java.util.Scanner sc) {
@@ -102,7 +106,8 @@ public class BulkContactService {
         System.out.print("Enter tag to apply: ");
         String tag = sc.nextLine();
         try {
-            selected.forEach(contact -> contact.addTag(tag));
+            Tag savedTag = tagService.saveOrCreateTag(ownerId, tag);
+            selected.forEach(contact -> contact.addTag(savedTag));
             System.out.println("Tag applied to " + selected.size() + " contacts.");
         } catch (IllegalArgumentException e) {
             System.out.println("Bulk tag failed: " + e.getMessage());
@@ -178,8 +183,14 @@ public class BulkContactService {
                 return contact -> type.equals(contact.getContactType());
             case "3":
                 System.out.print("Enter Tag: ");
-                String tag = sc.nextLine().trim().toUpperCase();
-                return contact -> contact.getTags().contains(tag);
+                String tag = sc.nextLine().trim();
+                try {
+                    Tag parsedTag = Tag.custom(tag);
+                    return contact -> contact.getTags().contains(parsedTag);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid tag. Using all contacts.");
+                    return contact -> true;
+                }
             case "4":
                 System.out.print("Name contains: ");
                 String term = sc.nextLine().trim().toLowerCase();
@@ -195,7 +206,10 @@ public class BulkContactService {
     private String toCsvLine(Contact contact) {
         String phones = contact.getPhoneNumbers().stream().map(Object::toString).collect(Collectors.joining("|"));
         String emails = contact.getEmailAddresses().stream().map(Object::toString).collect(Collectors.joining("|"));
-        String tags = contact.getTags().stream().sorted().collect(Collectors.joining("|"));
+        String tags = contact.getTags().stream()
+                .map(t -> t.getName().toUpperCase())
+                .sorted()
+                .collect(Collectors.joining("|"));
 
         return Stream.of(
                 contact.getReferenceId(),

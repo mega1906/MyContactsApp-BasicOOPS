@@ -65,4 +65,13 @@ public final class Validators {
         String normalized = phoneNumber.trim();
         return normalized.matches("^[+0-9][0-9\\-\\s]{6,19}$");
     }
+
+    // Tag should be readable and short.
+    public static boolean isValidTagName(String tagName) {
+        if (tagName == null) {
+            return false;
+        }
+        String normalized = tagName.trim();
+        return normalized.matches("^[A-Za-z][A-Za-z\\s]{1,19}$");
+    }
 }
